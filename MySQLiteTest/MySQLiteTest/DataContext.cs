@@ -30,7 +30,7 @@ namespace MySQLiteTest
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var dbPath = _databasePath;
-            //optionsBuilder.UseSqlite($"Filename={dbPath}");
+            optionsBuilder.UseSqlite($"Filename={dbPath}");
         }
     }
 
