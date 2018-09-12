@@ -57,14 +57,11 @@ namespace MySQLiteTest
             throw new System.DivideByZeroException();
         }
 
-        private static IList<String> GetItems()
+        private static IList<Invoice> GetItems()
         {
-            return new List<String>
-            {
-                "Steven",
-                "Suzanne",
-                "Adriana",
-            };
+            IList<Invoice> items = new List<Invoice>();
+            items.Add(new Invoice { Id = 1, Name = "Steven" });
+            return items;
         }
 
     }

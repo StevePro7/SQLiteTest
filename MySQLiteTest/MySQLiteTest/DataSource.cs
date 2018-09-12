@@ -10,10 +10,10 @@ namespace MySQLiteTest
 {
     public class DataSource : UITableViewSource
     {
-        private IList<String> tableItems;
+        private IList<Invoice> tableItems;
         private const string cellIdentifier = "TableCell";
 
-        public DataSource(IList<String> items)
+        public DataSource(IList<Invoice> items)
         {
             this.tableItems = items;
         }
@@ -26,7 +26,7 @@ namespace MySQLiteTest
                 cell = new UITableViewCell(UITableViewCellStyle.Default, cellIdentifier);
             }
 
-            cell.TextLabel.Text = tableItems[indexPath.Row];
+            cell.TextLabel.Text = tableItems[indexPath.Row].Name;
             return cell;
         }
 
@@ -42,18 +42,20 @@ namespace MySQLiteTest
 
         public void AddItem(String item)
         {
-            tableItems.Add(item);
+            String name = DateTime.Now.ToString();
+            Invoice invoice = new Invoice { Id = 0, Name = name };
+            tableItems.Add(invoice);
         }
         public void UpdateItem(String item)
         {
-            if (tableItems.Count >0)
+            if (tableItems.Count > 0)
             {
-                tableItems[0] = item;
+                tableItems[0].Name = item;
             }
         }
         public void RemoveItem(String item)
         {
-            tableItems.Remove(item);
+            tableItems.RemoveAt(0);
         }
     }
 }
