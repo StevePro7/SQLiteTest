@@ -20,70 +20,70 @@ namespace MySQLiteTest
             base.ViewDidLoad();
             // Perform any additional setup after loading the view, typically from a nib.
 
-            var items = GetItems();
-            dataSource = new DataSource(items);
+            //var items = GetItems();
+            //dataSource = new DataSource(items);
+
+            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library", "exrin.db");
+            dataContext = new DataContext(dbPath);
+
+            IList<Invoice> invoices = dataContext.Invoices.ToList();
+            dataSource = new DataSource(invoices);
             MyTablveView.Source = dataSource;
 
             MyAddButton.TouchUpInside += MyAddButton_TouchUpInside;
             MyUpdateButton.TouchUpInside += MyUpdateButton_TouchUpInside;
             MyRemoveButton.TouchUpInside += MyRemoveButton_TouchUpInside;
             MyExitButton.TouchUpInside += MyExitButton_TouchUpInside;
-
-            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library", "exrin.db");
-            dataContext = new DataContext(dbPath);
         }
 
         public override void ViewWillAppear(bool animated)
         {
-            IList<Invoice> invoices = dataContext.Invoices.ToList();
-            Invoice invoice1 = dataContext.Invoices.Find(123);
-            Invoice invoice4 = dataContext.Invoices.Find(456);
-
-            if (invoice1 == null)
-            {
-                Invoice inv = new Invoice { Id = 123, Name = "Steven", };
-                dataContext.Invoices.Add(inv);
-            }
-            if (invoice4 == null)
-            {
-                Invoice inv2 = new Invoice { Id = 456, Name = "StevePro", };
-                dataContext.Invoices.Add(inv2);
-            }
-
-            if (invoice1 != null)
-            {
-                invoice1.Name = "Suzanne";
-                dataContext.Invoices.Update(invoice1);
-            }
-            if (invoice4 != null)
-            {
-                invoice4.Name = "Adriana";
-                dataContext.Invoices.Update(invoice4);
-
-                //dataContext.Invoices.Remove(invoice4);
-            }
-
-            dataContext.SaveChanges();
-
             base.ViewWillAppear(animated);
         }
 
         private void MyAddButton_TouchUpInside(object sender, EventArgs e)
         {
-            String item = DateTime.Now.ToString();
-            dataSource.AddItem(item);
+            String name = DateTime.Now.ToString();
+
+            Invoice invoice = new Invoice { Id = 0, Name = name, };
+            dataContext.Invoices.Add(invoice);
+            dataContext.SaveChanges();
+
+            dataSource.AddItem(invoice);
             MyTablveView.ReloadData();
         }
 
         private void MyUpdateButton_TouchUpInside(object sender, EventArgs e)
         {
-            dataSource.UpdateItem("update");
+            IList<Invoice> invoices = dataContext.Invoices.ToList();
+            if (0 == invoices.Count)
+            {
+                return;
+            }
+
+            Invoice invoice = invoices[0];
+            String name = invoice.Name + "X";
+            invoice.Name = name;
+            dataContext.Invoices.Update(invoice);
+            dataContext.SaveChanges();
+
+            dataSource.UpdateItem(name);
             MyTablveView.ReloadData();
         }
 
         private void MyRemoveButton_TouchUpInside(object sender, EventArgs e)
         {
-            dataSource.RemoveItem("Suzanne");
+            IList<Invoice> invoices = dataContext.Invoices.ToList();
+            if (0 == invoices.Count)
+            {
+                return;
+            }
+
+            Invoice invoice = invoices[0];
+            dataContext.Invoices.Remove(invoice);
+            dataContext.SaveChanges();
+
+            dataSource.RemoveItem();
             MyTablveView.ReloadData();
         }
 
@@ -92,12 +92,12 @@ namespace MySQLiteTest
             throw new System.DivideByZeroException();
         }
 
-        private static IList<Invoice> GetItems()
-        {
-            IList<Invoice> items = new List<Invoice>();
-            items.Add(new Invoice { Id = 1, Name = "Steven" });
-            return items;
-        }
+        //private static IList<Invoice> GetItems()
+        //{
+        //    IList<Invoice> items = new List<Invoice>();
+        //    items.Add(new Invoice { Id = 1, Name = "Steven" });
+        //    return items;
+        //}
 
     }
 }

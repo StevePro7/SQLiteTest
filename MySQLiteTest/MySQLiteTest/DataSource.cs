@@ -40,10 +40,8 @@ namespace MySQLiteTest
             return 1;
         }
 
-        public void AddItem(String item)
+        public void AddItem(Invoice invoice)
         {
-            String name = DateTime.Now.ToString();
-            Invoice invoice = new Invoice { Id = 0, Name = name };
             tableItems.Add(invoice);
         }
         public void UpdateItem(String item)
@@ -53,9 +51,12 @@ namespace MySQLiteTest
                 tableItems[0].Name = item;
             }
         }
-        public void RemoveItem(String item)
+        public void RemoveItem()
         {
-            tableItems.RemoveAt(0);
+            if (tableItems.Count > 0)
+            {
+                tableItems.RemoveAt(0);
+            }
         }
     }
 }
